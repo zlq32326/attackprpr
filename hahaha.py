@@ -102,9 +102,19 @@ class Spider:
         #     #return None
 
 
-
-spider = Spider()
-spider.getContents()
+#
+# spider = Spider()
+# spider.getContents()
 
 
 #save_file ("F:/play/", "123123.TXT", spider.getimg('http://prprleg.com/test/'))
+
+
+#定义post的地址
+url = 'http://www.jdlingyu.org/page/2/'
+
+#提交，发送数据
+request = urllib2.Request(url)
+response = urllib2.urlopen(request)
+page = response.read()
+print page
