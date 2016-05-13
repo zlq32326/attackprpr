@@ -112,9 +112,25 @@ class Spider:
 
 #定义post的地址
 url = 'http://www.jdlingyu.org/page/2/'
-
 #提交，发送数据
 request = urllib2.Request(url)
 response = urllib2.urlopen(request)
 page = response.read()
-print page
+# print page
+pattern = re.compile('original=\'http://www.jdlingyu.org/wp-content/uploads/thumbnail(.*?)_200.jpg\' width=\'200\' height=',re.S)
+result = re.findall(pattern,page)
+for i in result:
+    try:
+        jpgurl = 'http://www.jdlingyu.org/wp-content/uploads/2016/02'+i+'.jpg'
+        print "打开" + jpgurl + "中"
+        request = urllib2.Request(jpgurl)
+        print "第一步完成"
+        response = urllib2.urlopen(request)
+        print "第二步完成"
+        page = response.read()
+        print "保存中"
+        save_file ("F:/play/", i + ".jpg",page)
+        print i+ "保存成功"
+    except Exception as e:
+        print i+ "保存失败"
+        raise
