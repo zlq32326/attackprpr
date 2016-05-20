@@ -1,59 +1,18 @@
-<!--<!DOCTYPE html>-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>这是对稀客网站的爬虫程序</title>-->
-<!--</head>-->
-<!--<div>-->
-<!--    <p>这是对稀客网站的爬虫宝具</p>-->
-<!--</div>-->
-<!--<div>-->
-<!--    URL:<input type="text" name="url"/>-->
-<!--    保存地址:<input type="text" name="localUrl"/>-->
-<!--</div>-->
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <!--    <title>这是对稀客网站的爬虫程序</title>-->
+</head>
+<div>
+    <!--    <p>这是对稀客网站的爬虫宝具</p>-->
+</div>
+<div>
+    <form action="" method="post">
+        开始<input type="submit" name="button" value="提交"/>
+    </form>
+</div>
 <?php
-/*
-function request_post($url = '', $param = '')
-{
-    if (empty(empty($url)) || empty($param)) {
-        return false;
-    }
-    $postUrl = $url;
-    $curlPost = $param;
-    $ch = curl_init();//初始化curl
-    curl_setopt($ch, CURLOPT_URL, $postUrl);//抓取指定网页
-    curl_setopt($ch, CURLOPT_HEADER, 0);//
-    curl_setopt($ch, CURLOPT_HTTPHEADER,
-        Array('Content-Type:application/x-www-form-urlencoded; charset=UTF-8',
-            'Host:prprleg.com',
-            'Origin:http://www.prprleg.com',
-            'Referer:http://www.prprleg.com/',
-            'User-Agent:Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
-        ));//设置header
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//要求结构为字符串
-    curl_setopt($ch, CURLOPT_POST, 1);//post提交方式
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);//data数据
-    $data = curl_exec($ch);
-    return $data;
-}
-
-$url = 'http://mobile.jschina.com.cn/jschina/register.php';
-$post_data = array(
-    'cache' => array(
-        'id' => 0,
-        'cacheid' => ""
-    ),
-    'data' => array(
-        'pageIndex' => 0,
-        'folderId' => 0
-    ),
-    'open' => "listimages"
-);
-
-$res = request_post($url, $post_data);
-
-echo $res;
- */
-
+//post获取内容
 function request_by_curl($remote_server, $post_string)
 {
     $ch = curl_init();
@@ -63,17 +22,31 @@ function request_by_curl($remote_server, $post_string)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HEADER, 0);
-//    curl_setopt($ch, CURLOPT_HTTPHEADER,
-//        Array(
-//            'Host:www.atool.org',
-//            'Origin:http://www.atool.org',
-//            'Referer:http://www.atool.org/httptest.php',
-//            'User-Agent:Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
-//        ));//设置header
     $data = curl_exec($ch);
     curl_close($ch);
-
     return $data;
+}
+
+
+//筛选图片地址
+function filterurl($web_content)
+{
+    //$match_result = array();
+    $reg_tag_a = '{"id":(.*?),"url":"(.*?)","upload_time":".*?"}';
+    $result = preg_match_all($reg_tag_a, $web_content, $match_result);
+    if ($result) {
+        return $match_result;
+    }
+}
+
+//保存文件
+function save_file($path, $url)
+{
+    $img = file_get_contents($url);
+    echo $path;
+    echo $url;
+    file_put_contents($path, $img);
+    echo '<img src = ' + $path + '>';
 }
 
 $post_data = array(
@@ -83,10 +56,27 @@ $post_data = array(
 );
 //echo print_r($post_data, 1);
 $post = http_build_query($post_data);
-//echo $post;
 $url = 'http://prprleg.com/Mprpr/m';
 $res = request_by_curl($url, $post);
-echo $res;
+$imgdata = filterurl($res);
+//echo print_r($imgdata[1], 1);
+
+if (!empty($_POST['button'])) {
+//    for ($x = 0; $x < count($imgdata[1]); $x++) {
+//        echo $imgdata[1][$x] . ",";
+//        ob_flush();
+//        flush();
+//        sleep(1);
+//        //save_file("/prpr/" . $imgdata[1][$x] . ".jpg", "http://cdn.img.prprleg.com/" . $imgdata[2][$x]);
+//    }
+    for ($i = 0; $i < 20; $i++) {
+        echo "lalallala," . "<br>";
+        ob_flush();
+        flush();
+        sleep(1);
+    }
+}
+
 
 ?>
 
